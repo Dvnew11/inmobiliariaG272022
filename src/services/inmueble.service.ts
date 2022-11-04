@@ -20,4 +20,14 @@ export class InmuebleService {
     });
     return inmuebles;
   }
-}
+
+  getInmueblesPorBarrio(ubicacion: string): Promise<Inmueble[]> {
+    let inmuebles = this.inmuebleRepository.find({
+      //Aplico filtros
+      where: {
+        barrio: ubicacion,
+        estado: 'A'
+      }
+    });
+    return inmuebles;
+  }

@@ -40,6 +40,24 @@ export class InmuebleController {
     return this.inmuebleService.getImublesDisponibles();
   }
 
+  @get('/inmueble-por-barrio/{ubicacion}')
+  @response(200, {
+    description: 'Consulta el listado de inmuebles por barrio',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Inmueble, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async inmueblesPorBarrio(
+    @param.path.string('ubicacion') ubicacion: string
+  ): Promise<Inmueble[]> {
+    return this.inmuebleService.getInmueblesPorBarrio(ubicacion);
+  }
+
   @post('/inmuebles')
   @response(200, {
     description: 'Inmueble model instance',
