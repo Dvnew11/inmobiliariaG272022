@@ -31,3 +31,4 @@ export class InmuebleService {
     });
     return inmuebles;
   }
+}
