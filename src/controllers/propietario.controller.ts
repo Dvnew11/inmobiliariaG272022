@@ -1,30 +1,29 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
+import fetch from 'cross-fetch';
 import {Propietario} from '../models';
 import {PropietarioRepository} from '../repositories';
+import {AutenticacionService} from '../services';
 
 export class PropietarioController {
   constructor(
     @repository(PropietarioRepository)
-    public propietarioRepository : PropietarioRepository,
-  ) {}
+    public propietarioRepository: PropietarioRepository,
+    @service(AutenticacionService)
+    public autenticacionService: AutenticacionService,
+  ) { }
 
   @post('/propietarios')
   @response(200, {
@@ -44,7 +43,15 @@ export class PropietarioController {
     })
     propietario: Omit<Propietario, 'id'>,
   ): Promise<Propietario> {
-    return this.propietarioRepository.create(propietario);
+    //let clave = this.autenticacionService.generarClave();
+    propietario.clave = this.autenticacionService.cifrarClave(propietario.clave);
+    let prop = await this.propietarioRepository.create(propietario);
+
+    fetch('http://localhost:5000/enviar-correo?mensaje=Inscripción al sistema Inmobiliario&asunto=Inscrito al sistema InmoAPI&correo=' + prop.correo)
+      .then(response => response.text())
+      .then(data => console.log(`Esta es la respuesta del servicio ${data}`));
+
+    return prop;
   }
 
   @get('/propietarios/count')
