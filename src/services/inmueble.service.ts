@@ -31,4 +31,37 @@ export class InmuebleService {
     });
     return inmuebles;
   }
+
+  getInmueblesPorBarrioConLike(ubicacion: string): Promise<Inmueble[]> {
+    let inmuebles = this.inmuebleRepository.find({
+      //Aplico filtros
+      where: {
+        barrio: `/.*${ubicacion}.*/i`,
+        estado: 'A'
+      }
+    });
+    return inmuebles;
+  }
+
+  getInmueblesConPrecioMayorA(valor: number): Promise<Inmueble[]> {
+    let inmuebles = this.inmuebleRepository.find({
+      where: {
+        precio: {gt: valor},
+        estado: 'A'
+      }
+    });
+    return inmuebles;
+  }
+
+  getInmueblesConPrecioMenorOIgualA(valor: number): Promise<Inmueble[]> {
+    let inmuebles = this.inmuebleRepository.find({
+      include: ['imagenes', 'propietario'],
+      where: {
+        precio: {lte: valor},
+        estado: 'A'
+      }
+    });
+    return inmuebles;
+  }
+
 }

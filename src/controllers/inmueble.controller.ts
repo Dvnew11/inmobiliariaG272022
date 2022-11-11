@@ -58,6 +58,42 @@ export class InmuebleController {
     return this.inmuebleService.getInmueblesPorBarrio(ubicacion);
   }
 
+  @get('/inmuebles-precio-mayor-a/{valor}')
+  @response(200, {
+    description: 'Inmuebles con precio mayor A',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Inmueble, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async inmueblesConPrecioMayorA(
+    @param.path.number('valor') valor: number
+  ): Promise<Inmueble[]> {
+    return this.inmuebleService.getInmueblesConPrecioMayorA(valor);
+  }
+
+  @get('/inmuebles-precio-menor-igual-a/{valor}')
+  @response(200, {
+    description: 'Inmuebles con precio menor igual A',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Inmueble, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async inmueblesConPrecioMenorOIgualA(
+    @param.path.number('valor') valor: number
+  ): Promise<Inmueble[]> {
+    return this.inmuebleService.getInmueblesConPrecioMenorOIgualA(valor);
+  }
+
   @post('/inmuebles')
   @response(200, {
     description: 'Inmueble model instance',
